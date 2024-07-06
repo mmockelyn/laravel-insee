@@ -35,7 +35,16 @@ class Insee
 
         // Fetch company information from Insee
         $client = new Client();
-        $result = $client->get('https://api.insee.fr/entreprises/sirene/V3/'.$type.'/'.$number, [
+
+        // Set API version
+        $api_version = config('insee.sirene_api_version', '');
+        if ($api_version) {
+            $url = 'https://api.insee.fr/entreprises/sirene/V'.$api_version;
+        } else {
+            $url = 'https://api.insee.fr/entreprises/sirene';
+        }
+
+        $result = $client->get($url.'/'.$type.'/'.$number, [
             'headers' => [
                 'Authorization' => 'Bearer '.$this->access_token(),
             ],
